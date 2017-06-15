@@ -15,6 +15,7 @@ class login:
             print(i['sid'],i['password'])
     def POST(self):
         data = web.data()
+        data = data.decode('utf-8')
         data = json.loads(data)
         if('pwd' in data):
             sid = data['sid'].replace('\n','')
