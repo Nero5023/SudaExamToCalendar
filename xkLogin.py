@@ -61,7 +61,7 @@ class XKLogin:
         else:
             # loginResult = loginResult[0].decode('gbk').encode('utf-8')
             print(loginResult)
-            return False
+            return loginResult[0]
 
     def getExamInfos(self):
         header = {

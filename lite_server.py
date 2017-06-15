@@ -15,24 +15,22 @@ class login:
             print(i['sid'],i['password'])
     def POST(self):
         data = web.data()
-        try:
-            data = json.loads(data)
-            if('pwd' in data):
-                sid = data['sid'].replace('\n','')
-                passwd = data['pwd'].replace('\n','')
-                session = XKLogin(sid,passwd)
-                user_dict[sid] = session
-                return session.getCaptcha()
-            elif('vc' in data):
-                sid = data['sid'].replace('\n','')
-                vc = data['vc'].replace('\n','')
-                if(sid in user_dict):
-                    return user_dict[sid].getExamInfos(vc)
-
-        except:
-            print("Login Failed,Got:[\n%s\n]" % str(data))
-
-
+        data = json.loads(data)
+        if('pwd' in data):
+            sid = data['sid'].replace('\n','')
+            passwd = data['pwd'].replace('\n','')
+            session = XKLogin(sid,passwd)
+            user_dict[sid] = session
+            return session.getCaptcha()
+        elif('vc' in data):
+            sid = data['sid'].replace('\n','')
+            vc = data['vc'].replace('\n','')
+            if(sid in user_dict):
+                res = user_dict[sid].login(vc)
+                if(res==True):
+                    return user_dict[sid].getExamInfos()
+                else:
+                    return res
 
 if __name__ == "__main__":
     app.run()
