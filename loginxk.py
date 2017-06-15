@@ -46,7 +46,6 @@ def loginXK():
     loginPageHTML = rs.get(url=loginURL, headers=header).content
     loginPageHTML = loginPageHTML.decode('gbk')
     vsDicRe = r'<input type="hidden" name="(.*?)" value="(.*?)"'
-    temp = re.findall(vsDicRe, loginPageHTML)
     vsDic = dict(re.findall(vsDicRe, loginPageHTML))
     viewState = vsDic["__VIEWSTATE"]
 
