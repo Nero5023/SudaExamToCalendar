@@ -9,3 +9,5 @@ out
 gen
 *.html
 *.jpg
+*.pyc
+__pycache__
