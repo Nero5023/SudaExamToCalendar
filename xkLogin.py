@@ -34,7 +34,7 @@ class XKLogin:
             f.write(checkCodeImg)
         return checkCodeImg
 
-    def getExamInfos(self, verifyCode):
+    def login(self, verifyCode):
         header = {
             "Host": "xk.suda.edu.cn",
             "Connection": "keep - alive",
@@ -57,11 +57,21 @@ class XKLogin:
         loginResult = re.findall(loginResRe, loginContent)
         if len(loginResult) == 0:
             print("Login Success")
+            return True
         else:
             # loginResult = loginResult[0].decode('gbk').encode('utf-8')
             print(loginResult)
-            print("Please login again")
-            return
+            return False
+
+    def getExamInfos(self):
+        header = {
+            "Host": "xk.suda.edu.cn",
+            "Connection": "keep - alive",
+            "Upgrade-Insecure-Requests": "1",
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+            "Accept-Language": "zh-CN,zh;q=0.8,en;q=0.6,zh-TW;q=0.4"
+        }
 
         examTimeURLDic = {
             "xh": self.studentID,
@@ -100,5 +110,6 @@ if __name__ == "__main__":
     l = XKLogin("1427407028", "znh706.")
     l.getCaptcha()
     verifyCode =  input("Enter the verify code: ")
-    res = l.getExamInfos(verifyCode)
+    l.login(verifyCode)
+    res = l.getExamInfos()
     print(res)
