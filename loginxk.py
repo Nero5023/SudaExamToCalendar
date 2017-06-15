@@ -1,16 +1,15 @@
 # -*- coding:utf-8 -*-
 
 import requests
-import sys
 import re
 import urllib
 from lxml import etree
 
-reload(sys)
-sys.setdefaultencoding('utf8')
+# reload(sys)
+# sys.setdefaultencoding('utf8')
 
 def getVerifyCode(img):
-    verifyCode = raw_input("Enter the verify code: ")
+    verifyCode = input("Enter the verify code: ")
     return verifyCode
 
 def parseExamHTML(examHTML):
@@ -23,7 +22,7 @@ def parseExamHTML(examHTML):
             continue
         tdXPath = 'td'
         tds = row.xpath(tdXPath)
-        tdtexts = map(lambda x: x.text, tds)
+        tdtexts = list(map(lambda x: x.text, tds))
         if tdtexts[3].isspace():
             continue
         # print ' '.join(tdtexts)
@@ -45,8 +44,9 @@ def loginXK():
     checkCodeImgURL = "http://xk.suda.edu.cn/CheckCode.aspx"
     rs = requests.session()
     loginPageHTML = rs.get(url=loginURL, headers=header).content
-
+    loginPageHTML = loginPageHTML.decode('gbk')
     vsDicRe = r'<input type="hidden" name="(.*?)" value="(.*?)"'
+    temp = re.findall(vsDicRe, loginPageHTML)
     vsDic = dict(re.findall(vsDicRe, loginPageHTML))
     viewState = vsDic["__VIEWSTATE"]
 
@@ -67,18 +67,19 @@ def loginXK():
     }
 
     loginContent = rs.post(url=loginURL, data=postdata).content
-    with open("result.html", 'w') as f:
+    loginContent = loginContent.decode('gbk')
+    with open("result.html", 'w', encoding='utf-8') as f:
         f.write(loginContent)
 
     loginResRe = r"<script language='javascript' defer>alert\('(.*?)'\)"
 
     loginResult = re.findall(loginResRe, loginContent)
     if len(loginResult) == 0:
-        print "Login Success"
+        print("Login Success")
     else:
-        loginResult = loginResult[0].decode('gbk').encode('utf-8')
-        print loginResult
-        print "Please login again"
+        # loginResult = loginResult[0].decode('gbk').encode('utf-8')
+        print(loginResult)
+        print("Please login again")
         loginXK()
 
     examTimeURLDic = {
@@ -86,19 +87,18 @@ def loginXK():
         "xm": "%D7%F3%B3%BD%BA%C0",
         "gnmkdm": "N121610"
     }
-    examTimeURLPar = urllib.urlencode(examTimeURLDic)
+    examTimeURLPar = urllib.parse.urlencode(examTimeURLDic)
     examTimeURL = "http://xk.suda.edu.cn/xskscx.aspx?" + examTimeURLPar
 
     header["Referer"] = "http://xk.suda.edu.cn/xs_main.aspx?xh=" + studentId
     examTimeRes = rs.get(url=examTimeURL, headers=header).content
     examTimeRes = examTimeRes.decode('gbk')
-    examTimeRes = examTimeRes.encode('utf-8')
-    with open("examRes.html", 'w') as f:
+    with open("examRes.html", 'w', encoding='utf-8') as f:
         f.write(examTimeRes)
 
     examTimeText = parseExamHTML(examTimeRes)
 
-    print examTimeText
+    print(examTimeText)
 
 def loginSession():
     header = {
