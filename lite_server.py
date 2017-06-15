@@ -28,9 +28,19 @@ class login:
             if(sid in user_dict):
                 res = user_dict[sid].login(vc)
                 if(res==True):
-                    return user_dict[sid].getExamInfos()
+                    return json.dumps(
+                            {
+                                'is_valid':1,
+                                'data':user_dict[sid].getExamInfos()
+                            })
+                    #return user_dict[sid].getExamInfos()
                 else:
-                    return res
+                    return json.dumps(
+                            {
+                                'is_valid':0,
+                                'data':res
+                            })
+                    #return res
 
 if __name__ == "__main__":
     app.run()
