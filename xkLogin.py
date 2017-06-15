@@ -53,7 +53,7 @@ class XKLogin:
         loginContent = self.session.post(url=LoginURL, data=postdata).content
         loginContent = loginContent.decode('gbk')
 
-        loginResRe = r"<script language='javascript' defer>alert\('(.*?)'\)"
+        loginResRe = r"alert\('(.*?)'\);</script>"
         loginResult = re.findall(loginResRe, loginContent)
         if len(loginResult) == 0:
             print("Login Success")
@@ -107,7 +107,7 @@ class XKLogin:
 
 
 if __name__ == "__main__":
-    l = XKLogin("1427407028", "znh706.")
+    l = XKLogin("1427407028", "znh706")
     l.getCaptcha()
     verifyCode =  input("Enter the verify code: ")
     l.login(verifyCode)
